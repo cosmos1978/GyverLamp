@@ -3,7 +3,7 @@ void webserver() {
   http = new(ESP8266WebServer);
   httpUpdater = new(ESP8266HTTPUpdateServer);
   httpUpdater->setup(http);
-
+  
   if (http !=NULL) {
 
     http->onNotFound(routeNotFound);
@@ -282,7 +282,22 @@ void routeSetConfig() {
 
   }
   
-  /** в знак завершения операции отправим текущую конфигурацию */
+  if(http->hasArg("r")){
+    r = http->arg("r").toInt();
+
+  }
+
+  if(http->hasArg("g")){
+    g = http->arg("g").toInt();
+
+  }
+
+  if(http->hasArg("b")){
+    b = http->arg("b").toInt();
+
+  }
+
+/** в знак завершения операции отправим текущую конфигурацию */
   routeGetConfig();
   MQTTUpdateState();
   
