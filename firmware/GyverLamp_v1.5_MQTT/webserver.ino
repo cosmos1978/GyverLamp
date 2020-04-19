@@ -210,16 +210,7 @@ void routeSetConfig() {
       return http->requestAuthentication();
   }
   #endif
-  
-  if (http->hasArg("on")) {
     
-    ONflag = (http->arg("on").toInt() > 0) ? true : false;
-    settChanged = true;
-    changePower();
-    sendCurrent();
-    
-  }
-  
   if (http->hasArg("currentMode")) {
     
     String value;
@@ -295,6 +286,15 @@ void routeSetConfig() {
   if(http->hasArg("b")){
     b = http->arg("b").toInt();
 
+  }
+
+  if (http->hasArg("on")) {
+    
+    ONflag = (http->arg("on").toInt() > 0) ? true : false;
+    settChanged = true;
+    changePower();
+    sendCurrent();
+    
   }
 
 /** в знак завершения операции отправим текущую конфигурацию */

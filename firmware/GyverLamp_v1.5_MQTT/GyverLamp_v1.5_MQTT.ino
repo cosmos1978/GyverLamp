@@ -176,9 +176,6 @@ boolean loadingFlag = true;
 boolean ONflag = true;
 uint32_t eepromTimer;
 boolean settChanged = false;
-// Конфетти, Огонь, Радуга верт., Радуга гориз., Смена цвета,
-// Безумие 3D, Облака 3D, Лава 3D, Плазма 3D, Радуга 3D,
-// Павлин 3D, Зебра 3D, Лес 3D, Океан 3D,
 
 unsigned char matrixValue[WIDTH][HEIGHT];
 String lampIP = "";
