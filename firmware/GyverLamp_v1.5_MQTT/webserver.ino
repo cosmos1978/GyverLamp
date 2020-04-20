@@ -263,9 +263,7 @@ void routeSetConfig() {
   }
   
   if(http->hasArg("brightness")){
-    ONflag = true;    
     modes[currentMode].brightness = http->arg("brightness").toInt();
-    changePower();
     FastLED.setBrightness(modes[currentMode].brightness);
 
     sendCurrent();
