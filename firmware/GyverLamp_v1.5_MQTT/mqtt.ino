@@ -24,58 +24,58 @@ void writeMQTTConfig(const char HOST[32], const char USER[32], const char PASSWD
 
 int Get_EFFIDX (String effect) {
   
-  if (effect.equals("Конфетти")) return 0;
-  if (effect.equals("Огонь")) return 1;
-  if (effect.equals("Радуга верт.")) return 2;
-  if (effect.equals("Радуга гориз.")) return 3;
-  if (effect.equals("Смена цвета")) return 4;
-  if (effect.equals("Безумие 3D")) return 5;
-  if (effect.equals("Облака 3D")) return 6;
-  if (effect.equals("Лава 3D")) return 7;
-  if (effect.equals("Плазма 3D")) return 8;
-  if (effect.equals("Радуга 3D")) return 9;
-  if (effect.equals("Павлин 3D")) return 10;
-  if (effect.equals("Зебра 3D")) return 11;
-  if (effect.equals("Лес 3D")) return 12;
-  if (effect.equals("Океан 3D")) return 13;
-  if (effect.equals("Цвет")) return 14;
-  if (effect.equals("Снегопад")) return 15;
-  if (effect.equals("Матрица")) return 16;
-  if (effect.equals("Светлячки")) return 17;
-  if (effect.equals("Аквариум")) return 18;
-  if (effect.equals("Звездопад")) return 19;
-  if (effect.equals("Пейнтбол")) return 20;
-  if (effect.equals("Спираль")) return 21;
-  if (effect.equals("Демо")) return 22;
+  if (effect.equals("Confetti")) return 0;
+  if (effect.equals("Fire")) return 1;
+  if (effect.equals("Rainbow vert")) return 2;
+  if (effect.equals("Rainbow Horiz")) return 3;
+  if (effect.equals("Color change")) return 4;
+  if (effect.equals("3D Madness")) return 5;
+  if (effect.equals("3D clouds")) return 6;
+  if (effect.equals("3D lava")) return 7;
+  if (effect.equals("3D plasma")) return 8;
+  if (effect.equals("3D rainbow")) return 9;
+  if (effect.equals("3D peacock")) return 10;
+  if (effect.equals("3D zebra")) return 11;
+  if (effect.equals("3D forest")) return 12;
+  if (effect.equals("3D ocean")) return 13;
+  if (effect.equals("Color")) return 14;
+  if (effect.equals("Snowfall")) return 15;
+  if (effect.equals("Matrix")) return 16;
+  if (effect.equals("Fireflies")) return 17;
+  if (effect.equals("Aquarium")) return 18;
+  if (effect.equals("Starfall")) return 19;
+  if (effect.equals("Paintball")) return 20;
+  if (effect.equals("Spiral")) return 21;
+  if (effect.equals("Dемо")) return 22;
 
 }
 
 String Get_EFFName (int eff_idx) {
 
   switch (eff_idx) {
-    case 0: return "Конфетти";
-    case 1: return "Огонь";
-    case 2: return "Радуга верт.";
-    case 3: return "Радуга гориз.";
-    case 4: return "Смена цвета";
-    case 5: return "Безумие 3D";
-    case 6: return "Облака 3D";
-    case 7: return "Лава 3D";
-    case 8: return "Плазма 3D";
-    case 9: return "Радуга 3D";
-    case 10: return "Павлин 3D";
-    case 11: return "Зебра 3D";
-    case 12: return "Лес 3D";
-    case 13: return "Океан 3D";
-    case 14: return "Цвет";
-    case 15: return "Снегопад";
-    case 16: return "Матрица";
-    case 17: return "Светлячки";
-    case 18: return "Аквариум";
-    case 19: return "Звездопад";
-    case 20: return "Пейнтбол";
-    case 21: return "Спираль";
-    case 22: return "Демо";
+    case 0: return "Confetti";
+    case 1: return "Fire";
+    case 2: return "Rainbow vert";
+    case 3: return "Rainbow Horiz";
+    case 4: return "Color change";
+    case 5: return "3D Madness";
+    case 6: return "3D clouds";
+    case 7: return "3D lava";
+    case 8: return "3D plasma";
+    case 9: return "3D rainbow";
+    case 10: return "3D peacock";
+    case 11: return "3D zebra";
+    case 12: return "3D forest";
+    case 13: return "3D ocean";
+    case 14: return "Color";
+    case 15: return "Snowfall";
+    case 16: return "Matrix";
+    case 17: return "Fireflies";
+    case 18: return "Aquarium";
+    case 19: return "Starfall";
+    case 20: return "Paintball";
+    case 21: return "Spiral";
+    case 22: return "Demo";
   }
 
 }
@@ -136,7 +136,7 @@ void MQTTcallback(char* topic, byte* payload, unsigned int length) {
 
       Serial.print("Command arrived: effect set to "); Serial.println(Payload);
 
-      if (Payload == "Демо") { 
+      if (Payload == "Demo") { 
 
           demo = true; 
           currentMode = random(0, MODE_AMOUNT-1);
@@ -315,7 +315,7 @@ void HomeAssistantSendDiscoverConfig() {
   String hass_discover_str;
   serializeJson(hass_discover, hass_discover_str);
 
-  const char eff_list[] = R"=====(, "fx_list": ["Конфетти", "Огонь", "Радуга верт.", "Радуга гориз.", "Смена цвета", "Безумие 3D", "Облака 3D", "Лава 3D", "Плазма 3D", "Радуга 3D", "Павлин 3D", "Зебра 3D", "Лес 3D", "Океан 3D", "Цвет", "Снегопад", "Матрица", "Светлячки",  "Аквариум", "Звездопад", "Пейнтбол", "Спираль", "Демо"] })=====";  // effect_list
+  const char eff_list[] = R"=====(, "fx_list": ["Confetti", "Fire", "Rainbow vert", "Rainbow Horiz", "Color change", "3D Madness", "3D clouds", "3D lava", "3D plasma", "3D rainbow", "3D peacock", "3D zebra", "3D forest", "3D ocean", "Color", "Snowfall", "Matrix", "Fireflies",  "Aquarium", "Starfall", "Paintball", "Spiral", "Demo"] })=====";  // effect_list
   const char dev_reg_tpl[] = R"=====(, "device": {"ids": ["%s"], "name": "Gyver Lamp", "mf": "Alex Gyver", "mdl": "Gyver Lamp v2", "sw": "1.5.5 MQTT"})=====";  // device reg
   char dev_reg[256];
 

@@ -58,7 +58,7 @@ void checkDawn() {
   thisTime = hrs * 60 + mins + (float)secs / 60;
 
   // проверка рассвета
-  if (alarm[thisDay].state &&                                       // день будильника
+  if (alarm[thisDay].state &&                                       // день Alarm clockа
       thisTime >= (alarm[thisDay].time - dawnOffsets[dawnMode]) &&  // позже начала
       thisTime < (alarm[thisDay].time + DAWN_TIMEOUT) ) {           // раньше конца + минута
     if (!manualOff) {
@@ -105,6 +105,6 @@ String getTimeStampString() {
    uint8_t seconds = ti->tm_sec;
    String secondStr = seconds < 10 ? "0" + String(seconds) : String(seconds);
 
-   return "Дата: "+ dayStr + "-" + monthStr + "-" + yearStr + ". " + "Время: " +
+   return "Date: "+ dayStr + "-" + monthStr + "-" + yearStr + ". " + "Time: " +
           hoursStr + ":" + minuteStr;
 }

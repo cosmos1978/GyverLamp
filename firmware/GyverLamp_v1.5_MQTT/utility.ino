@@ -16,14 +16,14 @@ void drawPixelXY(int8_t x, int8_t y, CRGB color) {
   }
 }
 
-// функция получения цвета пикселя по его номеру
+// функция получения Colorа пикселя по его номеру
 uint32_t getPixColor(int thisSegm) {
   int thisPixel = thisSegm * SEGMENTS;
   if (thisPixel < 0 || thisPixel > NUM_LEDS - 1) return 0;
   return (((uint32_t)leds[thisPixel].r << 16) | ((long)leds[thisPixel].g << 8 ) | (long)leds[thisPixel].b);
 }
 
-// функция получения цвета пикселя в матрице по его координатам
+// функция получения Colorа пикселя в матрице по его координатам
 uint32_t getPixColorXY(int8_t x, int8_t y) {
   return getPixColor(getPixelNumber(x, y));
 }
