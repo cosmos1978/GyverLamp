@@ -249,7 +249,6 @@ void setup() {
 
   // читаем статус лампы
   ONflag = EEPROM.read(420);
-  ONflag ? Serial.println("Последний статус лампы: включена") : Serial.println("Последний статус лампы: выключена");
   stop_eff = !ONflag;
 
   // WI-FI

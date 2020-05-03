@@ -196,6 +196,7 @@ void MQTTcallback(char* topic, byte* payload, unsigned int length) {
 
       modes[currentMode].brightness = Payload.toInt();
       FastLED.setBrightness(modes[currentMode].brightness);
+      saveEEPROM();
       settChanged = true;
       eepromTimer = millis();
       MQTTUpdateState();
@@ -239,6 +240,7 @@ void MQTTcallback(char* topic, byte* payload, unsigned int length) {
       b = getValue(Payload, ',', 2).toInt();
 
       currentMode = 14;
+      saveEEPROM();
       loadingFlag = true;
       delay(1);
       sendCurrent();

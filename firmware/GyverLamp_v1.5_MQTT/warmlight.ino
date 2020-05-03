@@ -2,6 +2,7 @@ void warmLightRoutine()
 {
   uint8_t centerY = max((uint8_t)round(HEIGHT / 2.0F) - 1, 0);
   uint8_t bottomOffset = (uint8_t)(!(HEIGHT & 1) && (HEIGHT > 1));
+  if (modes[currentMode].scale<17) modes[currentMode].scale = 17;
   for (int16_t y = centerY; y >= 0; y--)
   {
     CRGB color = CHSV(
