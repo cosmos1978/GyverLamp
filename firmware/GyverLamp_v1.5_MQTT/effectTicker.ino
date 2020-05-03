@@ -1,5 +1,4 @@
 uint32_t effTimer;
-bool stop_eff = false;
 
 void effectsTick() {
   if (!dawnFlag) {

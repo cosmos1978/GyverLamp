@@ -216,6 +216,8 @@ char mqtt_user[32] = "DEVS_USER";
 char mqtt_port[10] = "1883";
 byte mac[6];
 
+bool stop_eff = false;
+
 ADC_MODE (ADC_VCC);
 
 Timer *infoTimer = new Timer(60000);
@@ -247,6 +249,8 @@ void setup() {
 
   // читаем статус лампы
   ONflag = EEPROM.read(420);
+  ONflag ? Serial.println("Последний статус лампы: включена") : Serial.println("Последний статус лампы: выключена");
+  stop_eff = !ONflag;
 
   // WI-FI
   if (ESP_MODE == 0) {    // режим точки доступа
@@ -409,7 +413,7 @@ void setup() {
   
   dawnMode = EEPROM.read(199);
   currentMode = (int8_t)EEPROM.read(200);
-  FastLED.setBrightness(modes[currentMode].brightness);
+  //FastLED.setBrightness(modes[currentMode].brightness);
 
   // отправляем настройки
   sendSettings();
