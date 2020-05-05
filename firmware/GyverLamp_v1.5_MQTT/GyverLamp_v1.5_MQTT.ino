@@ -433,6 +433,8 @@ void setup() {
   dawnMode = EEPROM.read(199);
   currentMode = (int8_t)EEPROM.read(200);
 
+  if (ONflag) FastLED.setBrightness(modes[currentMode].brightness);
+  
   // отправляем настройки
   sendSettings();
 
