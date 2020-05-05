@@ -14,7 +14,7 @@ void PatternIncrementalDrift2() {
   }
   uint8_t dim = beatsin8(2, 170, 250);
   dimAll(dim);
-  FastLED.clear();
+//  FastLED.clear();
   for (uint8_t i = 0; i < WIDTH; i++)
   {
     CRGB color;
