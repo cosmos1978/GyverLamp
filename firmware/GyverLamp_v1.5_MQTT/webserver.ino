@@ -52,13 +52,13 @@ void responseHtml(String out, String title = "AlexGyver Lamp", int code = 200) {
       return http->requestAuthentication();
   }
   #endif
-   
+  
   String html;
   
   html = "<html>";
     html += "<head>";
       html += "<title>" + title + "</title>";
-      html += "<meta http-equiv=\"refresh\" content=\"30\" >";
+      html += "<meta http-equiv=\"refresh\" content=\"50\" >";
       html += "<meta name=\"viewport\" content=\"width=device-width, initial-scale=1, maximum-scale=1\" />";
       html += "<link rel=\"stylesheet\" href=\"https://demos.jquerymobile.com/1.4.5/css/themes/default/jquery.mobile-1.4.5.min.css\">";
       html += "<link rel=\"stylesheet\" href=\"http://fonts.googleapis.com/css?family=Open+Sans:300,400,700\">";
@@ -227,7 +227,7 @@ void routeSetConfig() {
     value = http->arg("currentMode");
     currentMode =  value.toInt();
 
-   if (currentMode == 24) {
+   if (currentMode == 26) {
 
       demo = true;
       currentMode = random(0, MODE_AMOUNT-1);      
@@ -454,7 +454,9 @@ void routeHome(){
           out += "<option value='21'>Spiral</option>";
           out += "<option value='22'>Warm Light</option>";
           out += "<option value='23'>Pendulum</option>";
-          out += "<option value='24'>Demo</option>";
+          out += "<option value='24'>Twinkles</option>";
+          out += "<option value='25'>Police Strobo</option>";
+          out += "<option value='26'>Demo</option>";
           
         out += "</select>";
       out += "</div>";
@@ -519,7 +521,9 @@ void routeHome(){
           out += "<option value='21'>Спираль</option>";
           out += "<option value='22'>Теплый свет</option>";
           out += "<option value='23'>Маятник</option>";
-          out += "<option value='24'>Демо</option>";
+          out += "<option value='24'>Мерцание</option>";
+          out += "<option value='25'>Полицейская сирена</option>";
+          out += "<option value='26'>Демо</option>";
           
         out += "</select>";
       out += "</div>";

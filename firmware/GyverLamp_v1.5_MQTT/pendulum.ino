@@ -1,12 +1,14 @@
-CRGBPalette16 cPalette( PartyColors_p );
-
 // -------------------------pendulum-------------------------
 void prismataRoutine() {
+
   if (modes[currentMode].scale > 100) modes[currentMode].scale = 100;
+
   EVERY_N_MILLIS(33) {
     hue++;
   }
+
   FastLED.clear();
+
   if ((modes[currentMode].scale >= 0) && (modes[currentMode].scale < 20)) { 
      cPalette = RainbowColors_p;
   } else if ((modes[currentMode].scale >= 20) && (modes[currentMode].scale < 40)) { 

@@ -50,7 +50,9 @@ int Get_EFFIDX (String effect) {
   if (effect.equals("Spiral")) return 21;
   if (effect.equals("Warm Light")) return 22;
   if (effect.equals("Pendulum")) return 23;
-  if (effect.equals("Dемо")) return 24;
+  if (effect.equals("Twinkles")) return 24;
+  if (effect.equals("Police Strobo")) return 25;
+  if (effect.equals("Dемо")) return 26;
 
   #else
 
@@ -78,7 +80,9 @@ int Get_EFFIDX (String effect) {
   if (effect.equals("Спираль")) return 21;
   if (effect.equals("Теплый свет")) return 22;
   if (effect.equals("Маятник")) return 23;
-  if (effect.equals("Демо")) return 24;
+  if (effect.equals("Мерцание")) return 24;
+  if (effect.equals("Полицейская сирена")) return 25;
+  if (effect.equals("Демо")) return 26;
 
   #endif
 
@@ -113,7 +117,9 @@ String Get_EFFName (int eff_idx) {
     case 21: return "Spiral";
     case 22: return "Warm Light";
     case 23: return "Pendulum";
-    case 24: return "Demo";
+    case 24: return "Twinkles";
+    case 25: return "Police Strobo";
+    case 26: return "Demo";
   }
 
   #else
@@ -143,7 +149,9 @@ String Get_EFFName (int eff_idx) {
     case 21: return "Спираль";
     case 22: return "Теплый свет";
     case 23: return "Маятник";
-    case 24: return "Демо";
+    case 24: return "Мерцание";
+    case 25: return "Полицейская сирена";
+    case 26: return "Демо";
   }
 
   #endif
@@ -376,9 +384,9 @@ void HomeAssistantSendDiscoverConfig() {
   serializeJson(hass_discover, hass_discover_str);
 
   #ifdef ENG
-  const char eff_list[] = R"=====(, "fx_list": ["Confetti", "Fire", "Rainbow vert", "Rainbow Horiz", "Color change", "3D Madness", "3D clouds", "3D lava", "3D plasma", "3D rainbow", "3D peacock", "3D zebra", "3D forest", "3D ocean", "Color", "Snowfall", "Matrix", "Fireflies",  "Aquarium", "Starfall", "Paintball", "Spiral", "Warm Light", "Pendulum", "Demo"] })=====";  // effect_list
+  const char eff_list[] = R"=====(, "fx_list": ["Confetti", "Fire", "Rainbow vert", "Rainbow Horiz", "Color change", "3D Madness", "3D clouds", "3D lava", "3D plasma", "3D rainbow", "3D peacock", "3D zebra", "3D forest", "3D ocean", "Color", "Snowfall", "Matrix", "Fireflies",  "Aquarium", "Starfall", "Paintball", "Spiral", "Warm Light", "Pendulum", "Twinkles", "Police Strobo", "Demo"] })=====";  // effect_list
   #else
-  const char eff_list[] = R"=====(, "fx_list": ["Конфетти", "Огонь", "Радуга верт.", "Радуга гориз.", "Смена цвета", "Безумие 3D", "Облака 3D", "Лава 3D", "Плазма 3D", "Радуга 3D", "Павлин 3D", "Зебра 3D", "Лес 3D", "Океан 3D", "Цвет", "Снегопад", "Матрица", "Светлячки",  "Аквариум", "Звездопад", "Пейнтбол", "Спираль", "Теплый свет", "Маятник", "Демо"] })=====";  // effect_list
+  const char eff_list[] = R"=====(, "fx_list": ["Конфетти", "Огонь", "Радуга верт.", "Радуга гориз.", "Смена цвета", "Безумие 3D", "Облака 3D", "Лава 3D", "Плазма 3D", "Радуга 3D", "Павлин 3D", "Зебра 3D", "Лес 3D", "Океан 3D", "Цвет", "Снегопад", "Матрица", "Светлячки",  "Аквариум", "Звездопад", "Пейнтбол", "Спираль", "Теплый свет", "Маятник", "Мерцание", "Полицейская сирена", "Демо"] })=====";  // effect_list
   #endif
   const char dev_reg_tpl[] = R"=====(, "device": {"ids": ["%s"], "name": "Gyver Lamp", "mf": "Alex Gyver", "mdl": "Gyver Lamp v2", "sw": "1.5.5 MQTT"})=====";  // device reg
   char dev_reg[256];

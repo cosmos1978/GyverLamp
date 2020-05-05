@@ -41,6 +41,7 @@
    -  Добавлено: Возможность задавать цвет через http запросы
    -  Added: English localization. To switch to English localization, uncomment the ENG directive
    -  Добавлено: новые эффекты "теплый свет", "маятник"
+   -  Добавлено: Ноые эффекты - Мерцание, Полицейская сирена (масштаб меняет эффект)
 
    -  Исправлено: ошибка синхронизации с Home Assistant при управлении лампой через приложение для смартфона
    -  Исправлено: "разгорание" лампы с нуля при изменении яркости из Home Assistant
@@ -129,15 +130,19 @@ byte IP_AP[] = {192, 168, 4, 100};   // статический IP точки д�
 
 // ------------------- ТИПЫ --------------------
 
-CRGB leds[NUM_LEDS];
 WiFiUDP Udp;
 WiFiUDP ntpUDP;
+
 NTPClient timeClient(ntpUDP, NTP_ADDRESS, GMT * 3600, NTP_INTERVAL);
 timerMinim timeTimer(1000);
 timerMinim timeStrTimer(120);
 GButton touch(BTN_PIN, LOW_PULL, NORM_OPEN);
 ESP8266WebServer *http; // запуск слушателя 80 порта (эйкей вебсервер)
 ESP8266HTTPUpdateServer *httpUpdater;
+
+CRGBPalette16 cPalette( PartyColors_p );
+CRGB ledsbuff[NUM_LEDS];
+CRGB leds[NUM_LEDS];
 
 // ----------------- ПЕРЕМЕННЫЕ ------------------
 
@@ -223,6 +228,9 @@ ADC_MODE (ADC_VCC);
 Timer *infoTimer = new Timer(60000);
 Timer *demoTimer = new Timer(60000); //  время переключения эффектов в "Демо" режиме
 
+const TProgmemRGBPalette16 *palette_arr[] = {&PartyColors_p, &OceanColors_p, &LavaColors_p, &HeatColors_p, &CloudColors_p, &ForestColors_p, &RainbowColors_p};
+const TProgmemRGBPalette16 *curPalette = palette_arr[0];
+
 void setup() {
 
   // ЛЕНТА
@@ -291,13 +299,24 @@ void setup() {
     wifiManager.addParameter(&custom_mqtt_port);
     wifiManager.addParameter(&custom_text_2);
 
+    #ifdef ENG
+
+    if (boot_count >= 5) {
+      while (!fillString("Reset Lamp settings!", CRGB::Red, true)) {
+        delay(1); yield();
+      }
+
+    #else
+
     if (boot_count >= 5) {
       while (!fillString("Сброс параметров подключения!", CRGB::Red, true)) {
         delay(1); yield();
       }
 
-      // обнуляем счетчик перезапусков
-      boot_count = 0; EEPROM.write(410, boot_count); EEPROM.commit();
+    #endif
+
+    // обнуляем счетчик перезапусков
+    boot_count = 0; EEPROM.write(410, boot_count); EEPROM.commit();
 
       if (!wifiManager.startConfigPortal()) {
          Serial.println("failed to start config Portal");
@@ -390,6 +409,7 @@ void setup() {
       EEPROM.put(3 * i + 40, modes[i]);
       //EEPROM.commit();
     }
+
     for (byte i = 0; i < 7; i++) {
       EEPROM.write(5 * i, alarm[i].state);   // рассвет
       eeWriteInt(5 * i + 1, alarm[i].time);
@@ -412,7 +432,6 @@ void setup() {
   
   dawnMode = EEPROM.read(199);
   currentMode = (int8_t)EEPROM.read(200);
-  //FastLED.setBrightness(modes[currentMode].brightness);
 
   // отправляем настройки
   sendSettings();
@@ -445,13 +464,13 @@ void setup() {
   if ((String(MQTTConfig.HOST) == "none") || (ESP_MODE == 0) || String(MQTTConfig.HOST).length() == 0) {
 
     USE_MQTT = false;
-    Serial.println("Использование MQTT сервера отключено.");
+    Serial.println("MQTT server is disabled.");
   }
 
    _BTN_CONNECTED = !digitalRead(BTN_PIN);
 
   #ifdef DEBUG
-  _BTN_CONNECTED ? Serial.println("Обнаружена сенсорная кнопка") : Serial.println("Cенсорная кнопка не обнаружена, управление сенсорной кнопкой отключено");
+  _BTN_CONNECTED ? Serial.println("Touch button detected.") : Serial.println("No touch button detected, touch button control disabled.");
   #endif
 
   infoTimer->setOnTimer(&infoCallback);

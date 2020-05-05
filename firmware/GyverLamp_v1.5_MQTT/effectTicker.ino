@@ -53,6 +53,10 @@ void effectsTick() {
           break;
         case 23: prismataRoutine(); 
           break;
+        case 24: twinklesRoutine();
+          break;
+        case 25: policeStroboRoutine();
+          break;
       }
       FastLED.show();
     }

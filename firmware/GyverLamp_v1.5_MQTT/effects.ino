@@ -175,11 +175,18 @@ void rainbowHorizontal() {
 
 // ---------------------------------------- ЦВЕТА ------------------------------------------
 void colorsRoutine() {
-  uint32_t ms = millis() / (modes[currentMode].speed + 1);
 
-  for (int i = 0; i < NUM_LEDS; i++) {
-    leds[i] = CHSV(ms, 200U, 255U);
+  cPalette = RainbowColors_p;
+  EVERY_N_MILLIS(modes[currentMode].speed) {
+    hue++;
   }
+
+  for (int x = 0; x < WIDTH; x++) {
+    for (int y = 0; y < HEIGHT; y++) {
+      drawPixelXY(x, y, ColorFromPalette(cPalette, hue));
+    }
+  }
+  
 }
 
 // --------------------------------- ЦВЕТ ------------------------------------
