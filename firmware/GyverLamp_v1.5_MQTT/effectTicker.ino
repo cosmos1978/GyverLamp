@@ -59,6 +59,8 @@ void effectsTick() {
           break;
         case 26: PatternIncrementalDrift2();
           break;
+        case 27: prideRoutine();
+          break;
       }
       FastLED.show();
     }
