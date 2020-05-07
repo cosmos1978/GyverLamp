@@ -61,6 +61,8 @@ void effectsTick() {
           break;
         case 27: prideRoutine();
           break;
+        case 28: weatherRoutine();
+          break;
       }
       FastLED.show();
     }

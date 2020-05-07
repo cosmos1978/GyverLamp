@@ -23,3 +23,16 @@ void saveDawnMmode() {
   EEPROM.write(199, dawnMode);   // рассвет
   EEPROM.commit();
 }
+
+void eeprom_write_string(String string){
+    int string_length =string.length();
+    char temp_char[string_length + 1];
+    string.toCharArray(temp_char, string_length + 1);
+    EEPROM.write(addr, string_length);
+    for (int i = 0 ; i < string_length ; i++){
+      addr++;
+      EEPROM.write(addr, temp_char[i]);
+    }
+    addr++;
+    EEPROM.commit();
+}

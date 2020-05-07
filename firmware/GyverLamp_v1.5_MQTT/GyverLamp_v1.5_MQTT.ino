@@ -97,7 +97,7 @@ byte IP_AP[] = {192, 168, 4, 100};   // статический IP точки д�
 // ============= ДЛЯ РАЗРАБОТЧИКОВ =============
 #define LED_PIN 2             // пин ленты
 #define BTN_PIN 4
-#define MODE_AMOUNT 28
+#define MODE_AMOUNT 29
 
 #define NUM_LEDS WIDTH * HEIGHT
 #define SEGMENTS 1            // диодов в одном "пикселе" (для создания матрицы из кусков ленты)
@@ -106,6 +106,29 @@ byte IP_AP[] = {192, 168, 4, 100};   // статический IP точки д�
 #define FASTLED_ALLOW_INTERRUPTS 0
 #define FASTLED_ESP8266_RAW_PIN_ORDER
 #define NTP_INTERVAL 600 * 1000    // обновление (10 минут)
+//-----------------------------weather--------------------
+String latitude;
+String longitude;
+String forecast = "6";
+#define HOURS_TO_REQUEST_WEATHER 6
+String openWeatherID = "543003aa20a03d9b6c9e991b071d38ea";
+String city = "Sint-Truiden";
+String countryCode = "BE";
+String msg;
+String url;
+unsigned long timer = 0;
+String weatherString;
+int weather;
+int WEATHER_SETTINGS_ADDR = 400;
+int addr = WEATHER_SETTINGS_ADDR;
+
+
+#define CLEAR         1
+#define CLOUDS        2
+#define RAIN          3
+#define THUNDERSTORM  4
+#define SNOW          5
+#define WEATHER_ADDR    505
 
 //#define DEBUG
 
@@ -114,6 +137,7 @@ byte IP_AP[] = {192, 168, 4, 100};   // статический IP точки д�
 #include <ESP8266WiFi.h>
 #include <DNSServer.h>
 #include <ESP8266WebServer.h>
+#include <ESP8266HTTPClient.h>
 #include <WiFiClient.h>
 #include <ESP8266mDNS.h>
 #include <ESP8266HTTPUpdateServer.h>
@@ -139,7 +163,14 @@ timerMinim timeStrTimer(120);
 GButton touch(BTN_PIN, LOW_PULL, NORM_OPEN);
 ESP8266WebServer *http; // запуск слушателя 80 порта (эйкей вебсервер)
 ESP8266HTTPUpdateServer *httpUpdater;
+  CRGB yellow = CHSV( HUE_YELLOW, 255, 255);
+  CRGB orange  = CHSV( HUE_ORANGE, 255, 255);
 
+CRGBPalette16 sunnyPalette(
+                     yellow, orange, yellow, orange,
+                     yellow, orange,yellow, orange,
+                     yellow, orange,yellow, orange,
+                     yellow, orange,yellow, orange );
 CRGBPalette16 cPalette( PartyColors_p );
 CRGB ledsbuff[NUM_LEDS];
 CRGB leds[NUM_LEDS];
@@ -230,6 +261,18 @@ Timer *demoTimer = new Timer(60000); //  время переключения э�
 
 const TProgmemRGBPalette16 *palette_arr[] = {&PartyColors_p, &OceanColors_p, &LavaColors_p, &HeatColors_p, &CloudColors_p, &ForestColors_p, &RainbowColors_p};
 const TProgmemRGBPalette16 *curPalette = palette_arr[0];
+
+String eeprom_read_string(){
+  String string;
+  int string_length = EEPROM.read(addr);
+  for (int i=0;i<string_length;i++){
+      addr++;
+      char b = EEPROM.read(addr);
+      string += b;
+  }
+  addr++;
+  return string;
+}
 
 void setup() {
 
@@ -457,6 +500,9 @@ void setup() {
     delay(500);
   }
   updTime();
+  forecast = eeprom_read_string();
+
+  request_weather();
   
   webserver();
   MDNS.addService("http", "tcp", 80);
@@ -480,7 +526,7 @@ void setup() {
 
   demoTimer->setOnTimer(&demoCallback);
   demoTimer->Start();
-
+ 
 }
 
 void loop() {
@@ -501,6 +547,11 @@ void loop() {
 
   ArduinoOTA.handle();
   yield();
+  unsigned long now = millis();
+  if (now > HOURS_TO_REQUEST_WEATHER*3600000 && ((now - timer) > HOURS_TO_REQUEST_WEATHER*3600000 || (now - timer) < 0)){
+    timer = millis();
+    request_weather();
+  }
 }
 
 void eeWriteInt(int pos, int val) {

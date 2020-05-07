@@ -327,6 +327,59 @@ void snowStormRoutine()
   }
 }
 
+// ----------------Weather effects RAIN--------------------------
+#define RAIN_SATURATION       (160U)                          // насыщенность (от 0 до 255)
+
+void weatherRainRoutine()
+{
+  if (loadingFlag)
+  {
+    loadingFlag = false;
+    FastLED.clear();
+  }
+ 
+  for (uint8_t i = 0U; i < WIDTH; i++)
+  {
+    if (getPixColorXY(i, HEIGHT - 1U) == 0U &&
+       (random(0, map(70, 0U, 255U, 10U, 120U)) == 0U) &&
+        getPixColorXY(i + 1U, HEIGHT - 1U) == 0U &&
+        getPixColorXY(i - 1U, HEIGHT - 1U) == 0U)
+    {
+      leds[getPixelNumber(i, HEIGHT - 1U)] = CHSV(random(130, 160), RAIN_SATURATION, 255U);
+    }
+  }
+
+  // сдвигаем по диагонали
+  for (uint8_t y = 0U; y < HEIGHT - 1U; y++)
+  {
+    for (uint8_t x = WIDTH - 1U; x > 0U; x--)
+    {
+      drawPixelXY(x, y, getPixColorXY(x - 1U, y + 1U));
+    }
+    drawPixelXY(0, y, getPixColorXY(WIDTH - 1U, y + 1U));
+  }
+
+  for (uint8_t i = 0U; i < WIDTH; i++)
+  {
+    fadePixel(i, HEIGHT - 1U, SNOW_TAIL_STEP);
+  }
+}
+
+void weatherClearRoutine() 
+{
+  cPalette = sunnyPalette;
+  EVERY_N_MILLIS(modes[currentMode].speed) {
+    hue++;
+  }
+
+  for (int x = 0; x < WIDTH; x++) {
+    for (int y = 0; y < HEIGHT; y++) {
+      drawPixelXY(x, y, ColorFromPalette(cPalette , hue));
+    }
+  }
+
+}
+
 // ------------- звездопад -------------
 #define STAR_DENSE            (60U)                         // плотность комет
 #define STAR_TAIL_STEP        (100U)                        // длина хвоста кометы

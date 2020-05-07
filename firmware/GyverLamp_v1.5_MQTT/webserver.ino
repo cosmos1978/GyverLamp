@@ -20,6 +20,8 @@ void webserver() {
     /** страница настройка будильника */
     http->on("/alarm", routeAlarm); 
     
+    http->on("/weather", routeWeather); 
+
     /** прием конфигурации будильника */
     http->on("/setalarmconfig", routeSetAlarmConfig); 
     
@@ -79,6 +81,7 @@ void responseHtml(String out, String title = "AlexGyver Lamp", int code = 200) {
                 html += "<ul>";
                     html += "<li><a href='/' data-ajax='false' data-icon='gear'>Basic settings</a></li>"; // сдлеать активной class='ui-btn-active'
                     html += "<li><a href='/alarm' data-ajax='false' data-icon='clock'>Alarm clock</a></li>";
+                    html += "<li><a href='/weather' data-ajax='false' data-icon='cloud'>Weather settings</a></li>";
                     html += "<!--<li><a href='/timer' data-ajax='false' data-icon='power'>Schedule</a></li>-->";
                 html += "</ul>";
                 #else  
@@ -227,7 +230,7 @@ void routeSetConfig() {
     value = http->arg("currentMode");
     currentMode =  value.toInt();
 
-   if (currentMode == 28) {
+   if (currentMode == 29) {
 
       demo = true;
       currentMode = random(0, MODE_AMOUNT-1);      
@@ -310,6 +313,36 @@ void routeSetConfig() {
   
 }
 
+void routeWeather(){
+  if (http->hasArg("Forecast")) {
+    forecast = http->arg("Forecast");
+    addr = WEATHER_SETTINGS_ADDR;
+    eeprom_write_string(forecast);  
+    msg = "Save Successfull!";
+    request_weather();
+  }
+  String out = "<form>";
+  out += "Forecast:  <select name=\"Forecast\">";
+  out += "<option " + String((forecast == "0")?"selected ":"") + "value=\"0\">Now</option>";
+  out += "<option " + String((forecast == "6")?"selected ":"") + "value=\"6\">+6  hours</option>";
+  out += "<option " + String((forecast == "12")?"selected ":"") + "value=\"12\">+12 hours</option>";
+  out += "<option " + String((forecast == "18")?"selected ":"") + "value=\"18\">+18 hours</option>";
+  out += "<option " + String((forecast == "24")?"selected ":"") + "value=\"24\">+24 hours</option>";
+  out += "<option " + String((forecast == "48")?"selected ":"") + "value=\"48\">+2  days</option>";
+  out += "<option " + String((forecast == "72")?"selected ":"") + "value=\"72\">+3  days</option>";
+  out += "<option " + String((forecast == "96")?"selected ":"") + "value=\"96\">+4  days</option>";
+  out += "</select>";
+  
+  out += "<br><br><input type='submit' name='SUBMIT' value='Save'></form>";
+  out += "<br>";
+  out += "The forecast in " + forecast + " hours : " + weatherString;
+  out += "<br>";
+  out += msg + "<br><br>";
+  responseHtml(out);
+
+}
+
+
 void routeAlarm(){
   #ifdef ENG
   String out, days[] = {"Mon","Tue","Wed","Thu","Fri","Sat","Sun"};
@@ -378,6 +411,7 @@ void routeSetAlarmConfig(){
   routeGetAlarmConfig();
   
 }
+
 
 void routeGetAlarmConfig() {
 
@@ -458,7 +492,8 @@ void routeHome(){
           out += "<option value='25'>Police Strobo</option>";
           out += "<option value='26'>Incremental Drift Rose</option>";
           out += "<option value='27'>Pride</option>";
-          out += "<option value='28'>Demo</option>";
+          out += "<option value='28'>Weather mode</option>";
+          out += "<option value='29'>Demo</option>";
           
         out += "</select>";
       out += "</div>";
@@ -482,6 +517,7 @@ void routeHome(){
   out += "<script type='text/javascript'>$(()=>{syncConfig('/getconfig','/setconfig');});</script>";
   out += "<br>";
   out += getTimeStampString();
+  
 
   #else
   
@@ -527,7 +563,8 @@ void routeHome(){
           out += "<option value='25'>Полицейская сирена</option>";
           out += "<option value='26'>Инкрементная дрифт-роз</option>";
           out += "<option value='27'>гордость</option>";
-          out += "<option value='28'>Демо</option>";
+          out += "<option value='28'>Weather mode</option>";
+          out += "<option value='29'>Демо</option>";
           
         out += "</select>";
       out += "</div>";
