@@ -396,9 +396,9 @@ void HomeAssistantSendDiscoverConfig() {
   serializeJson(hass_discover, hass_discover_str);
 
   #ifdef ENG
-  const char eff_list[] = R"=====(, "fx_list": ["Confetti", "Fire", "Rainbow vert", "Rainbow Horiz", "Color change", "3D Madness", "3D clouds", "3D lava", "3D plasma", "3D rainbow", "3D peacock", "3D zebra", "3D forest", "3D ocean", "Color", "Snowfall", "Matrix", "Fireflies",  "Aquarium", "Starfall", "Paintball", "Spiral", "Warm Light", "Pendulum", "Twinkles", "Police Strobo", "Incremental Drift Rose", "Pride", "Wheather mode", "Demo"] })=====";  // effect_list
+  const char eff_list[] = R"=====(, "fx_list": ["Confetti", "Fire", "Rainbow vert", "Rainbow Horiz", "Color change", "3D Madness", "3D clouds", "3D lava", "3D plasma", "3D rainbow", "3D peacock", "3D zebra", "3D forest", "3D ocean", "Color", "Snowfall", "Matrix", "Fireflies",  "Aquarium", "Starfall", "Paintball", "Spiral", "Warm Light", "Pendulum", "Twinkles", "Police Strobo", "Incremental Drift Rose", "Pride", "Weather mode", "Demo"] })=====";  // effect_list
   #else
-  const char eff_list[] = R"=====(, "fx_list": ["Конфетти", "Огонь", "Радуга верт.", "Радуга гориз.", "Смена цвета", "Безумие 3D", "Облака 3D", "Лава 3D", "Плазма 3D", "Радуга 3D", "Павлин 3D", "Зебра 3D", "Лес 3D", "Океан 3D", "Цвет", "Снегопад", "Матрица", "Светлячки",  "Аквариум", "Звездопад", "Пейнтбол", "Спираль", "Теплый свет", "Маятник", "Мерцание", "Полицейская сирена", "Инкрементная дрифт-роз", "гордость", "weather mode", "Демо"] })=====";  // effect_list
+  const char eff_list[] = R"=====(, "fx_list": ["Конфетти", "Огонь", "Радуга верт.", "Радуга гориз.", "Смена цвета", "Безумие 3D", "Облака 3D", "Лава 3D", "Плазма 3D", "Радуга 3D", "Павлин 3D", "Зебра 3D", "Лес 3D", "Океан 3D", "Цвет", "Снегопад", "Матрица", "Светлячки",  "Аквариум", "Звездопад", "Пейнтбол", "Спираль", "Теплый свет", "Маятник", "Мерцание", "Полицейская сирена", "Инкрементная дрифт-роз", "гордость", "Weather mode", "Демо"] })=====";  // effect_list
   #endif
   const char dev_reg_tpl[] = R"=====(, "device": {"ids": ["%s"], "name": "Gyver Lamp", "mf": "Alex Gyver", "mdl": "Gyver Lamp v2", "sw": "1.5.5 MQTT"})=====";  // device reg
   char dev_reg[256];
