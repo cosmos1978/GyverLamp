@@ -3,7 +3,7 @@ void request_weather(){
   int noOfBrackets;
   
   HTTPClient httpc;
-  url = "http://api.openweathermap.org/data/2.5/forecast?q=" + city + "," + countryCode + "&appid=" + openWeatherID + "&mode=json&units=metric&cnt=6";
+  String url = "http://api.openweathermap.org/data/2.5/forecast?q=" + city + "," + countryCode + "&appid=" + openWeatherID + "&mode=json&units=metric&cnt=3";
   httpc.begin(url);
   int httpCode = httpc.GET();
 
@@ -46,7 +46,7 @@ void request_weather(){
   for (int i=0; i<5; i++){
     pos = payload.indexOf("\"", pos + 1 );
   }
-   weatherString =  payload.substring(pos+1, payload.indexOf("\"", pos+2));
+   String weatherString =  payload.substring(pos+1, payload.indexOf("\"", pos+2));
   //Serial.println(weatherString);
 
   if (weatherString == "Clear"){
