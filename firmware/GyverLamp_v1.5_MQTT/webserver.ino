@@ -326,11 +326,11 @@ void routeWeather(){
   out += "<option " + String((forecast == "0")?"selected ":"") + "value=\"0\">Now</option>";
   out += "<option " + String((forecast == "6")?"selected ":"") + "value=\"6\">+6  hours</option>";
   out += "<option " + String((forecast == "12")?"selected ":"") + "value=\"12\">+12 hours</option>";
-  out += "<option " + String((forecast == "18")?"selected ":"") + "value=\"18\">+18 hours</option>";
-  out += "<option " + String((forecast == "24")?"selected ":"") + "value=\"24\">+24 hours</option>";
-  out += "<option " + String((forecast == "48")?"selected ":"") + "value=\"48\">+2  days</option>";
-  out += "<option " + String((forecast == "72")?"selected ":"") + "value=\"72\">+3  days</option>";
-  out += "<option " + String((forecast == "96")?"selected ":"") + "value=\"96\">+4  days</option>";
+//  out += "<option " + String((forecast == "18")?"selected ":"") + "value=\"18\">+18 hours</option>";
+//  out += "<option " + String((forecast == "24")?"selected ":"") + "value=\"24\">+24 hours</option>";
+//  out += "<option " + String((forecast == "48")?"selected ":"") + "value=\"48\">+2  days</option>";
+//  out += "<option " + String((forecast == "72")?"selected ":"") + "value=\"72\">+3  days</option>";
+//  out += "<option " + String((forecast == "96")?"selected ":"") + "value=\"96\">+4  days</option>";
   out += "</select>";
   
   out += "<br><br><input type='submit' name='SUBMIT' value='Save'></form>";
