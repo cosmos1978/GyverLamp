@@ -16,7 +16,16 @@ void webserver() {
     
     /** получить текущие настройки/конфигурацию */
     http->on("/getconfig", routeGetConfig); 
-  
+    
+      /** страница настройки параметров подключения */
+    http->on("/settings", routeSettings); 
+
+    /** получить текущие настройки/конфигурацию MQTT */
+    http->on("/getsettings", routeGetSettings); 
+
+    /** отправка текущих настроек/конфигурации MQTT */
+    http->on("/setsettings", routeSetSettings); 
+
     /** страница настройка будильника */
     http->on("/alarm", routeAlarm); 
     
@@ -60,7 +69,7 @@ void responseHtml(String out, String title = "AlexGyver Lamp", int code = 200) {
   html = "<html>";
     html += "<head>";
       html += "<title>" + title + "</title>";
-      html += "<meta http-equiv=\"refresh\" content=\"50\" >";
+      //html += "<meta http-equiv=\"refresh\" content=\"50\" >";
       html += "<meta name=\"viewport\" content=\"width=device-width, initial-scale=1, maximum-scale=1\" />";
       html += "<link rel=\"stylesheet\" href=\"https://demos.jquerymobile.com/1.4.5/css/themes/default/jquery.mobile-1.4.5.min.css\">";
       html += "<link rel=\"stylesheet\" href=\"http://fonts.googleapis.com/css?family=Open+Sans:300,400,700\">";
@@ -79,16 +88,18 @@ void responseHtml(String out, String title = "AlexGyver Lamp", int code = 200) {
             html += "<div data-role='navbar' data-iconpos='bottom'>";
                  #ifdef ENG
                 html += "<ul>";
-                    html += "<li><a href='/' data-ajax='false' data-icon='gear'>Basic settings</a></li>"; // сдлеать активной class='ui-btn-active'
+                    html += "<li><a href='/' data-ajax='false' data-icon='home'>Basic</a></li>"; // сдлеать активной class='ui-btn-active'
                     html += "<li><a href='/alarm' data-ajax='false' data-icon='clock'>Alarm clock</a></li>";
                     html += "<li><a href='/weather' data-ajax='false' data-icon='cloud'>Weather settings</a></li>";
-                    html += "<!--<li><a href='/timer' data-ajax='false' data-icon='power'>Schedule</a></li>-->";
+                    html += "<li><a href='/settings' data-ajax='false' data-icon='gear'>MQTT Settings clock</a></li>";
                 html += "</ul>";
                 #else  
                 html += "<ul>";
-                    html += "<li><a href='/' data-ajax='false' data-icon='gear'>Основные настройки</a></li>"; // сдлеать активной class='ui-btn-active'
+                    html += "<li><a href='/' data-ajax='false' data-icon='home'>Основные</a></li>"; // сдлеать активной class='ui-btn-active'
                     html += "<li><a href='/alarm' data-ajax='false' data-icon='clock'>Будильник</a></li>";
-                    html += "<!--<li><a href='/timer' data-ajax='false' data-icon='power'>Расписание</a></li>-->";
+                    html += "<li><a href='/weather' data-ajax='false' data-icon='cloud'>Weather settings</a></li>";
+                    html += "<li><a href='/settings' data-ajax='false' data-icon='gear'>Параметры MQTT</a></li>";
+
                 html += "</ul>";
                 #endif
                 
@@ -101,12 +112,6 @@ void responseHtml(String out, String title = "AlexGyver Lamp", int code = 200) {
       html += "    function syncConfig(getconfig = '/getconfig', setconfig = '/setconfig'){\n";
       html += "        $.ajax({url: getconfig, dataType:'json', success: init});\n";
       html += "        function init(config){\n";
-      html += "            /**\n";
-      html += "             * костыль/фича\n";
-      html += "             * лень было искать как нормально установить параметы в виджеты\n";
-      html += "             * пока не установятся параметры из ESP, отправка не будет осуществляться\n";
-      html += "             * @type {boolean}\n";
-      html += "             */\n";
       html += "            window.changeReaction = false;\n";
       html += "                let timeouts = {};\n";
       html += "                $('select, input').on('change',(v) => {\n";
@@ -183,6 +188,133 @@ void routeNotFound() {
   }
   out += "</pre><hr /><a class='ui-link' data-ajax='false' href=\"/\">Перейти на главную</a>";
   responseHtml(out, "Error 404", 404);
+}
+
+void routeSettings(){
+  String out;
+
+  out = "<form>";
+
+  out += "<br>";
+
+  #ifdef ENG
+
+      out += "<div class='ui-field-contain'>";
+        out += "<label for='mqtt_host'>MQTT Host:</label>";
+        out += "<input type='text' name='mqtt_host' id='mqtt_host'>";
+      out += "</div>";
+
+      out += "<div class='ui-field-contain'>";
+        out += "<label for='mqtt_port'>MQTT Port:</label>";
+        out += "<input type='number' name='mqtt_port' id='mqtt_port'>";
+      out += "</div>";
+
+      out += "<div class='ui-field-contain'>";
+        out += "<label for='mqtt_user'>MQTT User:</label>";
+        out += "<input type='text' name='mqtt_user' id='mqtt_user'>";
+      out += "</div>";
+
+      out += "<div class='ui-field-contain'>";
+        out += "<label for='mqtt_password'>MQTT Password:</label>";
+        out += "<input type='password' name='mqtt_password' id='mqtt_password'>";
+      out += "</div>";
+
+      out += "<div class='ui-field-contain'>";
+        USE_MQTT ? out += "<label for='mqtt_on'>Disable MQTT:</label>" : out += "<label for='mqtt_on'>Enable MQTT:</label>";
+        out += "<select name='mqtt_on' id='mqtt_on' data-role='slider' data-mini='true'>";
+          out += "<option value='0'>Off</option>";
+          out += "<option value='1'>On</option>";
+        out += "</select>";
+      out += "</div>";
+
+    #else
+
+      out += "<div class='ui-field-contain'>";
+        out += "<label for='mqtt_host'>Адрес MQTT:</label>";
+        out += "<input type='text' name='mqtt_host' id='mqtt_host'>";
+      out += "</div>";
+
+      out += "<div class='ui-field-contain'>";
+        out += "<label for='mqtt_port'>Порт MQTT:</label>";
+        out += "<input type='number' name='mqtt_port' id='mqtt_port'>";
+      out += "</div>";
+
+      out += "<div class='ui-field-contain'>";
+        out += "<label for='mqtt_user'>Имя пользователя MQTT:</label>";
+        out += "<input type='text' name='mqtt_user' id='mqtt_user'>";
+      out += "</div>";
+
+      out += "<div class='ui-field-contain'>";
+        out += "<label for='mqtt_password'>Пароль MQTT:</label>";
+        out += "<input type='password' name='mqtt_password' id='mqtt_password'>";
+      out += "</div>";
+
+      out += "<div class='ui-field-contain'>";
+        USE_MQTT ? out += "<label for='mqtt_on'>Отключить  MQTT:</label>" : out += "<label for='mqtt_on'>Включить  MQTT:</label>";
+        out += "<select name='mqtt_on' id='mqtt_on' data-role='slider' data-mini='true'>";
+          out += "<option value='0'>Выкл</option>";
+          out += "<option value='1'>Вкл</option>";
+        out += "</select>";
+      out += "</div>";
+
+  #endif
+
+  out += "<br>";
+
+  out += "</form>";
+  out += "<script type='text/javascript'>$(()=>{syncConfig('/getsettings','/setsettings');});</script>";
+  out += "<br>";
+
+  responseHtml(out);
+
+}
+
+// параметры подключения к MQTT
+
+void routeGetSettings() {
+
+  #ifdef WEBAUTH
+  if (!http->authenticate(clientId.c_str(), clientId.c_str())) {
+      return http->requestAuthentication();
+  }
+  #endif
+
+  MQTTconfig MQTTConfig = readMQTTConfig();
+  if (strlen(MQTTConfig.PORT) == 0) strcpy(MQTTConfig.PORT, "1883");
+
+  String out;
+
+  out += "{";
+  out += "\"status\": \"ok\", ";
+  out += "\"mqtt_on\": " + String(USE_MQTT)+ ", ";
+  out += "\"mqtt_host\": \"" + String(MQTTConfig.HOST)+ "\", ";
+  out += "\"mqtt_port\": " + String(MQTTConfig.PORT)+ ", ";
+  out += "\"mqtt_user\": \"" + String(MQTTConfig.USER)+"\", ";
+  out += "\"mqtt_password\": \"" + String(MQTTConfig.PASSWD)+"\"";
+  out += "}";
+
+  http->send(200, "text/json", out);
+}
+
+void routeSetSettings() {
+
+  #ifdef WEBAUTH
+  if (!http->authenticate(clientId.c_str(), clientId.c_str())) {
+      return http->requestAuthentication();
+  }
+  #endif
+
+  if (http->hasArg("mqtt_host")) strcpy(mqtt_server, http->arg("mqtt_host").c_str());
+  if (http->hasArg("mqtt_user")) strcpy(mqtt_user, http->arg("mqtt_user").c_str());
+  if (http->hasArg("mqtt_password")) strcpy(mqtt_password, http->arg("mqtt_password").c_str());
+  if (http->hasArg("mqtt_port")) strcpy(mqtt_port, http->arg("mqtt_port").c_str());
+  if (http->hasArg("mqtt_on")) USE_MQTT = (http->arg("mqtt_on").toInt() > 0) ? true : false;
+
+  USE_MQTT ? writeMQTTConfig(mqtt_server, mqtt_user, mqtt_password, mqtt_port) : writeMQTTConfig("none", mqtt_user, mqtt_password, mqtt_port);
+
+  /** в знак завершения операции отправим текущую конфигурацию */
+  routeGetSettings();
+
 }
 
 /**
