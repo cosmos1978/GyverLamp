@@ -112,9 +112,9 @@ byte IP_AP[] = {192, 168, 4, 100};   // статический IP точки д�
 //-----------------------------weather--------------------
 String forecast = "6";
 #define HOURS_TO_REQUEST_WEATHER 6
-String openWeatherID = "543003aa20a03d9b6c9e991b071d38ea";
-String city = "Sint-Truiden";
-String countryCode = "BE";
+String openWeatherID = "xxxxxxxxxxxxx";
+String city = "xxxxxxxxxx";
+String countryCode = "xx";
 String msg;
 unsigned long timer = 0;
 String weatherString;
