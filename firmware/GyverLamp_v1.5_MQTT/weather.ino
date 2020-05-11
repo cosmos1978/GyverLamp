@@ -16,9 +16,11 @@ void request_weather(){
     noOfBrackets = 3;
     jsonListIndex = 2;
   }
-/*  else if (forecast == "12"){
+  else if (forecast == "12"){
     noOfBrackets = 5;
+    jsonListIndex = 4;
   }
+  /*
   else if (forecast == "18"){
     noOfBrackets = 7;
   }
