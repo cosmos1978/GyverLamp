@@ -92,7 +92,7 @@ void weatherRoutine(){
       if (weather == CLEAR){
         modes[currentMode].speed = 117;
         weatherClearRoutine();
-        fillString(String(int(round(weatherTemp)))+" C", CRGB::Orange, false);
+        fillString(String(int(round(weatherTemp)))+" C", CRGB::Black, false);
       }
       else if (weather == CLOUDS){
         modes[currentMode].speed = 100;
@@ -116,6 +116,6 @@ void weatherRoutine(){
     
     else if (weather == SNOW){
       snowRoutine();
-      fillString(String(int(round(weatherTemp)))+" C", CRGB::Orange, false);
+      fillString(String(int(round(weatherTemp)))+" C", CRGB::Blue, false);
     }    
 }
