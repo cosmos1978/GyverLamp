@@ -63,7 +63,7 @@
 
 // ============= НАСТРОЙКИ =============
 // -------- ВРЕМЯ -------
-#define GMT 1              // смещение (москва 3)
+#define GMT 2              // смещение (москва 3)
 #define NTP_ADDRESS  "europe.pool.ntp.org"    // сервер времени
 
 // -------- РАССВЕТ -------
@@ -113,10 +113,10 @@ byte IP_AP[] = {192, 168, 4, 100};   // статический IP точки д�
 #define NTP_INTERVAL 600 * 1000    // обновление (10 минут)
 //-----------------------------weather--------------------
 String forecast = "6";
-#define HOURS_TO_REQUEST_WEATHER 6
-String openWeatherID = "xxxxxx";
-String city = "xxxxxx";
-String countryCode = "XX";
+#define HOURS_TO_REQUEST_WEATHER 1
+String openWeatherID = "543003aa20a03d9b6c9e991b071d38ea";
+String city = "Sint-Truiden";
+String countryCode = "BE";
 String msg;
 unsigned long timer = 0;
 String weatherString;
@@ -124,8 +124,6 @@ float weatherTemp;
 float weatherHumidity;
 float weatherWind;
 int weather;
-int WEATHER_SETTINGS_ADDR = 400;
-int addr = WEATHER_SETTINGS_ADDR;
 
 
 #define CLEAR         1
@@ -133,8 +131,9 @@ int addr = WEATHER_SETTINGS_ADDR;
 #define RAIN          3
 #define THUNDERSTORM  4
 #define SNOW          5
-#define WEATHER_ADDR    505
-
+#define WEATHER_ADDR    400
+//#define WEATHER_ADDR_2 490
+int addr = WEATHER_ADDR;
 //#define DEBUG
 
 #include "timerMinim.h"
