@@ -1,5 +1,5 @@
 void request_weather(){
-  int previousWeather = weather;
+  //int previousWeather = weather;
   int noOfBrackets;
   int jsonListIndex;
   
@@ -79,10 +79,10 @@ void request_weather(){
     weather = SNOW;
   }
 
-  if (previousWeather != weather){
-    EEPROM.write(WEATHER_ADDR, weather);
-    EEPROM.commit();
-  }
+ // if (previousWeather != weather){
+ //   EEPROM.write(WEATHER_ADDR_2, weather);
+ //   EEPROM.commit();
+  //}
   
   httpc.end();
 }
@@ -92,7 +92,7 @@ void weatherRoutine(){
       if (weather == CLEAR){
         modes[currentMode].speed = 117;
         weatherClearRoutine();
-        fillString(String(int(round(weatherTemp)))+" C", CRGB::Black, false);
+        fillString(String(int(round(weatherTemp)))+" C", CRGB::Blue, false);
       }
       else if (weather == CLOUDS){
         modes[currentMode].speed = 100;

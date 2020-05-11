@@ -669,7 +669,7 @@ void routeSetConfig() {
 void routeWeather(){
   if (http->hasArg("Forecast")) {
     forecast = http->arg("Forecast");
-    addr = WEATHER_SETTINGS_ADDR;
+    addr = WEATHER_ADDR;
     eeprom_write_string(forecast);  
     msg = "Save Successfull!";
     request_weather();
