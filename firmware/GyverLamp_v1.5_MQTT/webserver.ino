@@ -95,16 +95,16 @@ void responseHtml(String out, String title = "AlexGyver Lamp", int code = 200) {
                  #ifdef ENG
                 html += "<ul>";
                     html += "<li><a href='/' data-ajax='false' data-icon='home'>Basic</a></li>"; // сдлеать активной class='ui-btn-active'
-                    html += "<li><a href='/alarm' data-ajax='false' data-icon='clock'>Alarm clock</a></li>";
-                    html += "<li><a href='/weather' data-ajax='false' data-icon='cloud'>Weather settings</a></li>";
+                    html += "<li><a href='/alarm' data-ajax='false' data-icon='clock'>Alarm</a></li>";
+                    html += "<li><a href='/weather' data-ajax='false' data-icon='cloud'>Weather</a></li>";
                     html += "<li><a href='/info' data-ajax='false' data-icon='info'>Info</a></li>";
-                    html += "<li><a href='/settings' data-ajax='false' data-icon='gear'>MQTT Settings clock</a></li>";
+                    html += "<li><a href='/settings' data-ajax='false' data-icon='gear'>MQTT</a></li>";
                 html += "</ul>";
                 #else  
                 html += "<ul>";
                     html += "<li><a href='/' data-ajax='false' data-icon='home'>Основные</a></li>"; // сдлеать активной class='ui-btn-active'
                     html += "<li><a href='/alarm' data-ajax='false' data-icon='clock'>Будильник</a></li>";
-                    html += "<li><a href='/weather' data-ajax='false' data-icon='cloud'>Weather settings</a></li>";
+                    html += "<li><a href='/weather' data-ajax='false' data-icon='cloud'>Weather</a></li>";
                     html += "<li><a href='/info' data-ajax='false' data-icon='info'>Инфо</a></li>";
                     html += "<li><a href='/settings' data-ajax='false' data-icon='gear'>MQTT</a></li>";
                 html += "</ul>";
