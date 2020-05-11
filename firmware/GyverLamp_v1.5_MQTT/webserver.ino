@@ -11,6 +11,9 @@ void webserver() {
     /** главная */
     http->on("/", routeHome);
     
+    /** информация о модуле */
+    http-> on ( "/info" , routeInfo);
+
     /** прием конфигурации */
     http->on("/setconfig", routeSetConfig); 
     
@@ -36,6 +39,9 @@ void webserver() {
     
     /** получить текущие настройки/конфигурацию будильника */
     http->on("/getalarmconfig", routeGetAlarmConfig);
+    
+    /** перезазрузка лампы */
+    http-> on ( " / reboot " , routeReboot);
 
     /** stub for favicon  **/
     http->on("/favicon.ico", []() {
@@ -91,6 +97,7 @@ void responseHtml(String out, String title = "AlexGyver Lamp", int code = 200) {
                     html += "<li><a href='/' data-ajax='false' data-icon='home'>Basic</a></li>"; // сдлеать активной class='ui-btn-active'
                     html += "<li><a href='/alarm' data-ajax='false' data-icon='clock'>Alarm clock</a></li>";
                     html += "<li><a href='/weather' data-ajax='false' data-icon='cloud'>Weather settings</a></li>";
+                    html += "<li><a href='/info' data-ajax='false' data-icon='info'>Info</a></li>";
                     html += "<li><a href='/settings' data-ajax='false' data-icon='gear'>MQTT Settings clock</a></li>";
                 html += "</ul>";
                 #else  
@@ -98,8 +105,8 @@ void responseHtml(String out, String title = "AlexGyver Lamp", int code = 200) {
                     html += "<li><a href='/' data-ajax='false' data-icon='home'>Основные</a></li>"; // сдлеать активной class='ui-btn-active'
                     html += "<li><a href='/alarm' data-ajax='false' data-icon='clock'>Будильник</a></li>";
                     html += "<li><a href='/weather' data-ajax='false' data-icon='cloud'>Weather settings</a></li>";
-                    html += "<li><a href='/settings' data-ajax='false' data-icon='gear'>Параметры MQTT</a></li>";
-
+                    html += "<li><a href='/info' data-ajax='false' data-icon='info'>Инфо</a></li>";
+                    html += "<li><a href='/settings' data-ajax='false' data-icon='gear'>MQTT</a></li>";
                 html += "</ul>";
                 #endif
                 
@@ -168,6 +175,218 @@ void responseHtml(String out, String title = "AlexGyver Lamp", int code = 200) {
   http->sendHeader("Cache-Control","max-age=0, private, must-revalidate");
   http->send(code, "text/html; charset=utf-8", html); 
 }
+
+void routeReboot() {
+
+  http->send(200, "text/html; charset=utf-8", "Reboot...");
+  delay(3000);
+  ESP.restart();
+}
+
+void routeInfo() {
+
+  MQTTconfig MQTTConfig = readMQTTConfig();
+  String out;
+
+  out +="<hr>";
+  out += "<table style=\"width:100%\">";
+
+  out +="<tr>";
+  #ifdef ENG 
+  out +="<td>Wi-Fi</th>"; 
+  #else 
+  out +="<td>Wi-Fi сеть</th>";
+  #endif
+
+  out +="<td>                              </th>";
+  out +="<td>"+WiFi.SSID()+"</th>";
+  out +=" </tr>";
+
+  out +="<tr>";
+  #ifdef ENG
+  out +="<td>ID</th>";
+  #else
+  out +="<td>Идентификатор</th>";
+  #endif
+
+  out +="<td>                              </th>";
+  out +="<td>"+String(clientId)+"</th>";
+  out +=" </tr>";
+
+  out +="<tr>";
+  #ifdef ENG
+  out +="<td>WiFi signal strength</th>";
+  #else
+  out +="<td>Уровень WiFi сигнала</th>";
+  #endif
+
+  out +="<td>                              </th>";
+  out +="<td>"+ String(2*(WiFi.RSSI()+100)) +"%</th>";
+  out +=" </tr>";
+
+  out +="<tr>";
+  #ifdef ENG
+  out +="<td>Lamp IP address</th>";
+  #else
+  out +="<td>IP адрес лампы</th>";
+  #endif
+
+  out +="<td>                              </th>";
+  out +="<td>"+WiFi.localIP().toString()+"</th>";
+  out +=" </tr>";
+
+  out +="<tr>";
+  #ifdef ENG
+  out +="<td>Gate IP</th>";
+  #else
+  out +="<td>IP адрес роутера</th>";
+  #endif
+
+  out +="<td>                              </th>";
+  out +="<td>"+WiFi.gatewayIP().toString()+"</th>";
+  out +=" </tr>";
+
+  out +="<tr>";
+  #ifdef ENG
+  out +="<td>MAC address</th>";
+  #else
+  out +="<td>MAC адрес</th>";
+  #endif
+
+  out +="<td>                              </th>";
+  out +="<td>"+WiFi.macAddress()+"</th>";
+  out +=" </tr>";
+
+  out +="<tr>";
+  #ifdef ENG
+  out +="<td>Wi-Fi channel</th>";
+  #else
+  out +="<td>Канал связи Wi-Fi</th>";
+  #endif
+
+  out +="<td>                              </th>";
+  out +="<td>"+String(WiFi.channel())+"</th>";
+  out +=" </tr>";
+
+  out +="<tr>";
+  #ifdef ENG
+  out +="<td>Chip ID</th>";
+  #else
+  out +="<td>ID Чипа</th>";
+  #endif
+
+  out +="<td>                              </th>";
+  out +="<td>"+String(ESP.getChipId(), HEX) +"</th>";
+  out +=" </tr>";
+
+  out +="<tr>";
+  #ifdef ENG
+  out +="<td>Restart Reason</th>";
+  #else
+  out +="<td>Причина перезагрузки</th>";
+  #endif
+  out +="<td>                              </th>";
+  out +="<td>"+ESP.getResetReason() +"</th>";
+  out +=" </tr>";
+
+  out +="<tr>";
+  #ifdef ENG
+  out +="<td>Core version</th>";
+  #else
+  out +="<td>Версия ядра</th>";
+  #endif
+
+  out +="<td>                              </th>";
+  out +="<td>"+ESP.getCoreVersion() +"</th>";
+  out +=" </tr>";
+
+  out +="<tr>";
+  #ifdef ENG
+  out +="<td>Chip frequency</th>";
+  #else
+  out +="<td>Частота чипа</th>";
+  #endif  
+
+  out +="<td>                              </th>";
+  out +="<td>"+String(ESP.getCpuFreqMHz())+" MHz</th>";
+  out +=" </tr>";
+
+  out +="<tr>";
+  #ifdef ENG
+  out +="<td>Sketch size</th>";
+  #else
+  out +="<td>Размер скетча</th>";
+  #endif  
+  out +="<td>                              </th>";
+  out +="<td>"+String(ESP.getSketchSize()/1024)+" kb</th>";
+  out +=" </tr>";
+
+  out +="<tr>";
+  #ifdef ENG
+  out +="<td>Memory</th>";
+  #else
+  out +="<td>Объем памяти</th>";
+  #endif  
+  out +="<td>                              </th>";
+  out +="<td>"+String(ESP.getFlashChipSize()/1024/8)+" kb</th>";
+  out +=" </tr>";
+
+  out +="<tr>";
+  #ifdef ENG
+  out +="<td>Free memory for sketch</th>";
+  #else
+  out +="<td>Свободно памяти для скетча</th>";
+  #endif  
+  out +="<td>                              </th>";
+  out +="<td>"+String(ESP.getFreeSketchSpace()/1024/8)+" kb</th>";
+  out +=" </tr>";
+
+  out +="<tr>";
+  #ifdef ENG
+  out +="<td>Free RAM</th>";
+  #else
+  out +="<td>Свободно оперативной памяти</th>";
+  #endif  
+  out +="<td>                              </th>";
+  out +="<td>"+String(ESP.getFreeHeap()/1024)+" kb</th>";
+  out +=" </tr>";
+
+  out +="<tr>";
+  #ifdef ENG
+  out +="<td>MQTT host address</th>";
+  #else
+  out +="<td>Адрес MQTT сервера</th>";
+  #endif  
+  out +="<td>                              </th>";
+  out +="<td>" + String(MQTTConfig.HOST) + "</th>";
+  out +=" </tr>";
+
+  out +="<tr>";
+  #ifdef ENG
+  out +="<td>Uptime</th>";
+  #else
+  out +="<td>Время непрерывной работы</th>";
+  #endif  
+  out +="<td>                              </th>";
+  out +="<td>"+String(uptime_formatter::getUptime())+"</th>";
+  out +=" </tr>";
+
+  out +="<tr>";
+  #ifdef ENG
+  out +="<td>Current date and time</th>";
+  #else
+  out +="<td>Текущая дата и время</th>";
+  #endif  
+  out +="<td>                              </th>";
+  out +="<td>"+ getTimeStampString()+"</th>";
+  out +=" </tr>";
+
+  out += "</table><hr>";
+
+  responseHtml(out);
+
+}
+
 
 /**
  * исключение/вывод ошибки о не найденном пути
@@ -295,6 +514,8 @@ void routeGetSettings() {
 
   http->send(200, "text/json", out);
 }
+
+
 
 void routeSetSettings() {
 
@@ -464,10 +685,42 @@ void routeWeather(){
 //  out += "<option " + String((forecast == "72")?"selected ":"") + "value=\"72\">+3  days</option>";
 //  out += "<option " + String((forecast == "96")?"selected ":"") + "value=\"96\">+4  days</option>";
   out += "</select>";
-  
   out += "<br><br><input type='submit' name='SUBMIT' value='Save'></form>";
   out += "<br>";
-  out += "The forecast in " + forecast + " hours : " + weatherString;
+  
+  out +="<hr>";
+  out += "<table style=\"width:100%\">";
+  
+  out +="<tr>";
+  out +="<td>Forecast</th>"; 
+  out +="<td>                              </th>";
+  out +="<td>"+forecast+" Hours</th>";
+  out +=" </tr>"; 
+  
+  out +="<tr>";
+  out +="<td>Weather</th>"; 
+  out +="<td>                              </th>";
+  out +="<td>"+weatherString+"</th>";
+  out +=" </tr>";  
+   
+  out +="<tr>";
+  out +="<td>Temperature</th>"; 
+  out +="<td>                              </th>";
+  out +="<td>"+String(weatherTemp)+" C</th>";
+  out +=" </tr>"; 
+  
+  out +="<tr>";
+  out +="<td>Humidity</th>"; 
+  out +="<td>                              </th>";
+  out +="<td>"+String(weatherHumidity)+" %</th>";
+  out +=" </tr>";  
+
+  out +="<tr>";
+  out +="<td>Windspeed</th>"; 
+  out +="<td>                              </th>";
+  out +="<td>"+String(weatherWind)+ " km/h</th>";
+  out +=" </tr>";  
+  out += "</table><hr>";
   out += "<br>";
   out += msg + "<br><br>";
   responseHtml(out);
@@ -648,7 +901,6 @@ void routeHome(){
   out += "</form>";
   out += "<script type='text/javascript'>$(()=>{syncConfig('/getconfig','/setconfig');});</script>";
   out += "<br>";
-  out += getTimeStampString();
   
 
   #else
@@ -720,7 +972,6 @@ void routeHome(){
   out += "</form>";
   out += "<script type='text/javascript'>$(()=>{syncConfig('/getconfig','/setconfig');});</script>";
   out += "<br>";
-  out += getTimeStampString();
 
   #endif
 

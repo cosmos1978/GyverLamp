@@ -45,6 +45,8 @@
    -  Добавлено: Новые эффекты - Дрейф, Стая
    -  Added weather mode
    -  Добавлено: Настройки MQTT брокера вынесены в отдельную вкладку в веб интерфейсе
+   -  Добавлено: Страница информации в веб интерфейсе
+
 
    -  Исправлено: ошибка синхронизации с Home Assistant при управлении лампой через приложение для смартфона
    -  Исправлено: "разгорание" лампы с нуля при изменении яркости из Home Assistant
@@ -112,12 +114,15 @@ byte IP_AP[] = {192, 168, 4, 100};   // статический IP точки д�
 //-----------------------------weather--------------------
 String forecast = "6";
 #define HOURS_TO_REQUEST_WEATHER 6
-String openWeatherID = "xxxxxxxxxxxxx";
-String city = "xxxxxxxxxx";
-String countryCode = "xx";
+String openWeatherID = "xxxxxx";
+String city = "xxxxxx";
+String countryCode = "XX";
 String msg;
 unsigned long timer = 0;
 String weatherString;
+float weatherTemp;
+float weatherHumidity;
+float weatherWind;
 int weather;
 int WEATHER_SETTINGS_ADDR = 400;
 int addr = WEATHER_SETTINGS_ADDR;
@@ -151,6 +156,7 @@ int addr = WEATHER_SETTINGS_ADDR;
 #include <ArduinoOTA.h>
 #include <Timer.h>
 #include "fonts.h"
+#include <uptime_formatter.h>
 
 // ------------------- ТИПЫ --------------------
 

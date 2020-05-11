@@ -1,6 +1,7 @@
 void request_weather(){
   int previousWeather = weather;
   int noOfBrackets;
+  int jsonListIndex;
   
   HTTPClient httpc;
   String url = "http://api.openweathermap.org/data/2.5/forecast?q=" + city + "," + countryCode + "&appid=" + openWeatherID + "&mode=json&units=metric&cnt=6";
@@ -9,11 +10,13 @@ void request_weather(){
 
   if (forecast == "0"){
     noOfBrackets = 1;
+    jsonListIndex = 0;
   }
   else if (forecast == "6"){
     noOfBrackets = 3;
+    jsonListIndex = 2;
   }
-  else if (forecast == "12"){
+/*  else if (forecast == "12"){
     noOfBrackets = 5;
   }
   else if (forecast == "18"){
@@ -30,11 +33,21 @@ void request_weather(){
   }
   else if (forecast == "96"){
     noOfBrackets = 33;
-  }
+  }*/
+
   // parse json (forecast, 24h later)
   //if (httpCode > 0) { //Check the returning code
       String payload = httpc.getString(); //Get the request response payload
    // }
+  DynamicJsonDocument doc(4094);
+  deserializeJson(doc, payload);
+  JsonObject obj = doc.as<JsonObject>();
+  //weatherString = obj["list"][jsonListIndex]["weather"][0]["main"];
+  weatherTemp = obj["list"][jsonListIndex]["main"]["temp"];
+  weatherHumidity = obj["list"][jsonListIndex]["main"]["humidity"];
+  weatherWind = obj["list"][jsonListIndex]["wind"]["speed"];
+
+
   // parse json (forecast, 24h later)
   int pos = payload.indexOf('[');
   if (pos == -1){
@@ -47,6 +60,7 @@ void request_weather(){
     pos = payload.indexOf("\"", pos + 1 );
   }
   weatherString =  payload.substring(pos+1, payload.indexOf("\"", pos+2));
+
   //Serial.println(weatherString);
 
   if (weatherString == "Clear"){
@@ -78,14 +92,17 @@ void weatherRoutine(){
       if (weather == CLEAR){
         modes[currentMode].speed = 117;
         weatherClearRoutine();
+        fillString(String(int(round(weatherTemp)))+" C", CRGB::Orange, false);
       }
       else if (weather == CLOUDS){
         modes[currentMode].speed = 100;
         cloudNoise(); 
+        fillString(String(int(round(weatherTemp)))+" C", CRGB::Orange, false);
       }
     }
     if (weather == RAIN || weather == THUNDERSTORM){
         weatherRainRoutine();
+        fillString(String(int(round(weatherTemp)))+" C", CRGB::Orange, false);
       if (weather == THUNDERSTORM){
         int randomThunder = random8(100);
         if (randomThunder > 98){
@@ -99,5 +116,6 @@ void weatherRoutine(){
     
     else if (weather == SNOW){
       snowRoutine();
+      fillString(String(int(round(weatherTemp)))+" C", CRGB::Orange, false);
     }    
 }
