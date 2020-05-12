@@ -1,83 +1,60 @@
 void request_weather(){
-  //int previousWeather = weather;
-  int noOfBrackets;
   int jsonListIndex;
-  
   HTTPClient httpc;
-  String url = "http://api.openweathermap.org/data/2.5/forecast?q=" + city + "," + countryCode + "&appid=" + openWeatherID + "&mode=json&units=metric&cnt=6";
-  httpc.begin(url);
-  int httpCode = httpc.GET();
 
-  if (forecast == "0"){
-    noOfBrackets = 1;
-    jsonListIndex = 0;
-  }
-  else if (forecast == "6"){
-    noOfBrackets = 3;
-    jsonListIndex = 2;
-  }
-  else if (forecast == "12"){
-    noOfBrackets = 5;
-    jsonListIndex = 4;
-  }
-  /*
-  else if (forecast == "18"){
-    noOfBrackets = 7;
-  }
-  else if (forecast == "24"){
-    noOfBrackets = 9;
-  }
-  else if (forecast == "48"){
-    noOfBrackets = 17;
-  }
-  else if (forecast == "72"){
-    noOfBrackets = 25;
-  }
-  else if (forecast == "96"){
-    noOfBrackets = 33;
-  }*/
+  httpc.useHTTP10(true);
+  httpc.begin("http://api.openweathermap.org/data/2.5/forecast?q=" + city + "," + countryCode + "&appid=" + openWeatherID + "&mode=json&units=metric");
+  httpc.GET();
 
-  // parse json (forecast, 24h later)
-  //if (httpCode > 0) { //Check the returning code
-      String payload = httpc.getString(); //Get the request response payload
-   // }
-  DynamicJsonDocument doc(4094);
-  deserializeJson(doc, payload);
+  jsonListIndex = forecast.toInt() / 3;
+
+  StaticJsonDocument<800> filter;
+    filter["list"][0]["weather"][0]["main"] = true;
+    filter["list"][0]["main"]["temp"] = true;
+    filter["list"][0]["main"]["humidity"] = true;
+    filter["list"][0]["wind"]["speed"] = true;
+    
+    filter["list"][8]["weather"][0]["main"] = true;
+    filter["list"][8]["main"]["temp"] = true;
+    filter["list"][8]["main"]["humidity"] = true;
+    filter["list"][8]["wind"]["speed"] = true;  
+
+    filter["list"][16]["weather"][0]["main"] = true;
+    filter["list"][16]["main"]["temp"] = true;
+    filter["list"][16]["main"]["humidity"] = true;
+    filter["list"][16]["wind"]["speed"] = true; 
+
+    filter["list"][24]["weather"][0]["main"] = true;
+    filter["list"][24]["main"]["temp"] = true;
+    filter["list"][24]["main"]["humidity"] = true;
+    filter["list"][24]["wind"]["speed"] = true; 
+
+    filter["list"][32]["weather"][0]["main"] = true;
+    filter["list"][32]["main"]["temp"] = true;
+    filter["list"][32]["main"]["humidity"] = true;
+    filter["list"][32]["wind"]["speed"] = true; 
+  DynamicJsonDocument doc(7000);
+  deserializeJson(doc, httpc.getStream(), DeserializationOption::Filter(filter));
   JsonObject obj = doc.as<JsonObject>();
-  //weatherString = obj["list"][jsonListIndex]["weather"][0]["main"];
-  weatherTemp = obj["list"][jsonListIndex]["main"]["temp"];
+  weatherStringTemp = String(obj["list"][jsonListIndex]["weather"][0]["main"]);
+  weatherString = String(weatherStringTemp);
+  weatherTemp = obj["list"][jsonListIndex]["main"]["temp"];;
   weatherHumidity = obj["list"][jsonListIndex]["main"]["humidity"];
   weatherWind = obj["list"][jsonListIndex]["wind"]["speed"];
 
-
-  // parse json (forecast, 24h later)
-  int pos = payload.indexOf('[');
-  if (pos == -1){
-    return;
-  }
-  for (int i=0; i<noOfBrackets; i++){
-    pos = payload.indexOf('[', pos + 1 );
-  }
-  for (int i=0; i<5; i++){
-    pos = payload.indexOf("\"", pos + 1 );
-  }
-  weatherString =  payload.substring(pos+1, payload.indexOf("\"", pos+2));
-
-  //Serial.println(weatherString);
-
-  if (weatherString == "Clear"){
+  if (String(weatherString) == "Clear"){
     weather = CLEAR;
   }
-  else if (weatherString == "Clouds"){
+  else if (String(weatherString) == "Clouds"){
     weather = CLOUDS;
   }
-  else if (weatherString == "Rain" || weatherString == "Drizzle"){
+  else if (String(weatherString) == "Rain" || String(weatherString) == "Drizzle"){
     weather = RAIN;
   }
-  else if (weatherString == "Thunderstorm"){
+  else if (String(weatherString) == "Thunderstorm"){
     weather = THUNDERSTORM;
   }
-  else if (weatherString == "Snow"){
+  else if (String(weatherString) == "Snow"){
     weather = SNOW;
   }
 

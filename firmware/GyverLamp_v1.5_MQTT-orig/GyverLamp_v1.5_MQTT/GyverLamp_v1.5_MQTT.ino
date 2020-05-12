@@ -112,7 +112,7 @@ byte IP_AP[] = {192, 168, 4, 100};   // статический IP точки д�
 #define FASTLED_ESP8266_RAW_PIN_ORDER
 #define NTP_INTERVAL 600 * 1000    // обновление (10 минут)
 //-----------------------------weather--------------------
-String forecast = "0";
+String forecast = "6";
 #define HOURS_TO_REQUEST_WEATHER 1
 String openWeatherID = "543003aa20a03d9b6c9e991b071d38ea";
 String city = "Sint-Truiden";
@@ -120,7 +120,6 @@ String countryCode = "BE";
 String msg;
 unsigned long timer = 0;
 String weatherString;
-const char* weatherStringTemp;
 float weatherTemp;
 float weatherHumidity;
 float weatherWind;
