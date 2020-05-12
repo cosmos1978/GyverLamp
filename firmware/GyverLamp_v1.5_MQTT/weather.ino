@@ -36,7 +36,7 @@ void request_weather(){
   DynamicJsonDocument doc(7000);
   deserializeJson(doc, httpc.getStream(), DeserializationOption::Filter(filter));
   JsonObject obj = doc.as<JsonObject>();
-  weatherStringTemp = String(obj["list"][jsonListIndex]["weather"][0]["main"]);
+  weatherStringTemp = obj["list"][jsonListIndex]["weather"][0]["main"];
   weatherString = String(weatherStringTemp);
   weatherTemp = obj["list"][jsonListIndex]["main"]["temp"];;
   weatherHumidity = obj["list"][jsonListIndex]["main"]["humidity"];
